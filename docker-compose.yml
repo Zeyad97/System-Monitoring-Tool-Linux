@@ -1,0 +1,33 @@
+version: '3'
+
+services:
+  system_monitor:
+    build: .
+    container_name: system-monitor
+    tty: true
+    volumes:
+      - .:/app
+    working_dir: /app
+    depends_on:
+      - influxdb
+    environment:
+      - PYTHONUNBUFFERED=1
+
+  influxdb:
+    image: influxdb:2.7
+    container_name: influxdb
+    ports:
+      - "8086:8086"
+    volumes:
+      - influxdb_data:/var/lib/influxdb2
+    environment:
+      - DOCKER_INFLUXDB_INIT_MODE=setup
+      - DOCKER_INFLUXDB_INIT_USERNAME=admin
+      - DOCKER_INFLUXDB_INIT_PASSWORD=admin123
+      - DOCKER_INFLUXDB_INIT_ORG=myorg
+      - DOCKER_INFLUXDB_INIT_BUCKET=monitoring
+      - DOCKER_INFLUXDB_INIT_ADMIN_TOKEN=mytoken
+
+volumes:
+  influxdb_data:
+
